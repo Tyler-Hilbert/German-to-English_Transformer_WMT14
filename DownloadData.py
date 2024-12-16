@@ -1,16 +1,11 @@
 # Script to download the WMT 2014 English-German dataset
-#   Source: https://www.kaggle.com/datasets/mohamedlotfy50/wmt-2014-english-german#
-
-# Download data
-import kagglehub
-downloadPath = kagglehub.dataset_download("mohamedlotfy50/wmt-2014-english-german")
-print("Downloaded to:", downloadPath)
+#   Source: https://huggingface.co/datasets/wmt/wmt14
 
 
-# Move data to current directory
-import os
-import shutil
-dataPath = "./Data" # Path to data in current directory
-print("Moving data to:", dataPath)
-os.mkdir(dataPath) # Create directory
-shutil.move(os.path.dirname(os.path.dirname(downloadPath)), dataPath) # Move data
+from datasets import load_dataset
+
+# Load dataset
+ds = load_dataset("wmt/wmt14", "de-en")
+# Save dataset to disk
+for split, split_dataset in ds.items():
+    split_dataset.to_json(f"Data/wmt_de-en_{split}.jsonl")
