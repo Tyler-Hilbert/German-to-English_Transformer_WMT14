@@ -1,1 +1,0 @@
-This is where the WMT de-en dataset is downloaded to after running `DownloadData.py`
