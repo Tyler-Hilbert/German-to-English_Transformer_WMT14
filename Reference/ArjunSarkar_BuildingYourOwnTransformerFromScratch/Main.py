@@ -1,5 +1,5 @@
+# I have modified the original script to use wmt14.
 # Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
-# I have modified this script to use wmt14. The tokens are currently hardcoded to the first 6400.
 
 from Model import Transformer
 
@@ -19,15 +19,16 @@ max_seq_length = 100
 dropout = 0.1
 
 # Load tokens
+# TODO - improve tokenization process
 en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 en_tokens_full = []
-with open('data_en.txt', 'r') as file:
+with open('data/data_en.txt', 'r') as file:
     for line in file:
         en_tokens_full += en_tokenizer(line.strip()).input_ids
 
 de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
 de_tokens_full = []
-with open('data_de.txt', 'r') as file:
+with open('data/data_de.txt', 'r') as file:
     for line in file:
         de_tokens_full += de_tokenizer(line.strip()).input_ids
 
@@ -49,6 +50,7 @@ print (de_tensor.shape)
 #print (max(de_tokens))
 
 # Model
+# TODO - don't hardcode vocab size
 transformer = Transformer(30000, 30000, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
 criterion = nn.CrossEntropyLoss(ignore_index=0)
 optimizer = optim.Adam(transformer.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
