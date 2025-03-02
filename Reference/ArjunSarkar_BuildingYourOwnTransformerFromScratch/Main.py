@@ -27,13 +27,13 @@ vocab_size = 30000 # TODO - use exact embeddings size
 # TODO - improve tokenization process
 en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 en_tokens_full = []
-with open('data/data_en.txt', 'r') as file:
+with open('data/data_en_train.txt', 'r') as file:
     for line in file:
         en_tokens_full += en_tokenizer(line.strip()).input_ids
 
 de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
 de_tokens_full = []
-with open('data/data_de.txt', 'r') as file:
+with open('data/data_de_train.txt', 'r') as file:
     for line in file:
         de_tokens_full += de_tokenizer(line.strip()).input_ids
 
