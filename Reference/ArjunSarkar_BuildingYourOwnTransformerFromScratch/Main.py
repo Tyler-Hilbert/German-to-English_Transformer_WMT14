@@ -15,7 +15,7 @@ d_model = 512
 num_heads = 8
 num_layers = 6
 d_ff = 2048
-max_seq_length = 160
+max_seq_length = 100
 dropout = 0.1
 epochs = 750
 lr = 0.0001
@@ -30,15 +30,11 @@ de_end_token = 4
 ######################################################
 
 # Convert `file_path`, a file of space separated sentences, to tokens using `tokenizer`
-# Currently adds padding to make debugging easier
 def tokenize(file_path, tokenizer, padding, max_seq_length):
     tokens = []
     with open(file_path, 'r') as file:
         for line in file:
-            sentence_tokens = tokenizer(line.strip()).input_ids
-            padding_length = max_seq_length - len(sentence_tokens)
-            sentence_tokens += [padding] * padding_length
-            tokens += sentence_tokens
+            tokens += tokenizer(line.strip()).input_ids
     return tokens
 
 # Trim the number of tokens to fit `num_sequences` * `max_seq_length`.
@@ -97,7 +93,7 @@ for epoch in range(epochs):
     print(f"Epoch: {epoch+1}, Training Loss: {loss.item()}, Validation Loss: {val_loss.item()}")
 
     # Save Model
-    full_model_path = model_path + '_epoch' + str(epoch)
+    full_model_path = model_path + '_epoch' + str(epoch) + '.pt'
     torch.save({
             'epoch': epoch,
             'model_state_dict': transformer.state_dict(),
