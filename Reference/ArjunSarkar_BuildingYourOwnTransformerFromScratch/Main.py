@@ -15,21 +15,30 @@ d_model = 512
 num_heads = 8
 num_layers = 6
 d_ff = 2048
-max_seq_length = 100
+max_seq_length = 160
 dropout = 0.1
 epochs = 750
 lr = 0.0001
 num_sequences = 100 # The number of training sequences. Will be multiplied by `max_sequence_length` to get number of tokens.
 vocab_size = 30000 # TODO - use exact embeddings size
 
-model_path = 'models/transformer_wmt14' # Path to save model 
+# Other values
+model_path = 'models/transformer_wmt14' # Path to save model
+en_end_token = 102
+de_end_token = 4
+
+######################################################
 
 # Convert `file_path`, a file of space separated sentences, to tokens using `tokenizer`
-def tokenize(file_path, tokenizer):
+# Currently adds padding to make debugging easier
+def tokenize(file_path, tokenizer, padding, max_seq_length):
     tokens = []
     with open(file_path, 'r') as file:
         for line in file:
-            tokens += tokenizer(line.strip()).input_ids
+            sentence_tokens = tokenizer(line.strip()).input_ids
+            padding_length = max_seq_length - len(sentence_tokens)
+            sentence_tokens += [padding] * padding_length
+            tokens += sentence_tokens
     return tokens
 
 # Trim the number of tokens to fit `num_sequences` * `max_seq_length`.
@@ -43,16 +52,17 @@ def trim_tokens_to_fit(tokens, num_sequences, max_seq_length):
     return tokens_tensor
 
 ######################################################
+
 # Load tokens
 # TODO - improve tokenization process
 #   EN tokens
 en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-en_tokens_train = tokenize('data/data_en_train.txt', en_tokenizer)
-en_tokens_validation = tokenize('data/data_en_validation.txt', en_tokenizer)
+en_tokens_train = tokenize('data/data_en_train.txt', en_tokenizer, en_end_token, max_seq_length)
+en_tokens_validation = tokenize('data/shuffled_en.txt', en_tokenizer, en_end_token, max_seq_length)
 #   DE tokens
 de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
-de_tokens_train = tokenize('data/data_de_train.txt', de_tokenizer)
-de_tokens_validation = tokenize('data/data_de_validation.txt', de_tokenizer)
+de_tokens_train = tokenize('data/data_de_train.txt', de_tokenizer, de_end_token, max_seq_length)
+de_tokens_validation = tokenize('data/shuffled_de.txt', de_tokenizer, de_end_token, max_seq_length)
 
 # Trim token to fit (and in this case to reduce training set size)
 # Convert from list to tensor
