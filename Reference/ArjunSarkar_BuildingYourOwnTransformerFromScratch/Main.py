@@ -22,6 +22,8 @@ lr = 0.0001
 num_sequences = 100 # The number of training sequences. Will be multiplied by `max_sequence_length` to get number of tokens.
 vocab_size = 30000 # TODO - use exact embeddings size
 
+model_path = 'models/transformer_wmt14' # Path to save model 
+
 # Convert `file_path`, a file of space separated sentences, to tokens using `tokenizer`
 def tokenize(file_path, tokenizer):
     tokens = []
@@ -68,15 +70,29 @@ optimizer = optim.Adam(transformer.parameters(), lr=lr, betas=(0.9, 0.98), eps=1
 for epoch in range(epochs):
     transformer.train()
     optimizer.zero_grad()
+
     # Forward pass
     output = transformer(en_tensor_train, de_tensor_train[:, :-1])
     loss = criterion(output.contiguous().view(-1, vocab_size), de_tensor_train[:, 1:].contiguous().view(-1))
+
     # Backpropagation
     loss.backward()
     optimizer.step()
+
     # Compute loss
     transformer.eval()
     with torch.no_grad():
         val_output = transformer(en_tensor_validation, de_tensor_validation[:, :-1])
         val_loss = criterion(val_output.contiguous().view(-1, vocab_size), de_tensor_validation[:, 1:].contiguous().view(-1))
     print(f"Epoch: {epoch+1}, Training Loss: {loss.item()}, Validation Loss: {val_loss.item()}")
+
+    # Save Model
+    full_model_path = model_path + '_epoch' + str(epoch)
+    torch.save({
+            'epoch': epoch,
+            'model_state_dict': transformer.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'loss': loss
+        },
+        full_model_path
+    )
