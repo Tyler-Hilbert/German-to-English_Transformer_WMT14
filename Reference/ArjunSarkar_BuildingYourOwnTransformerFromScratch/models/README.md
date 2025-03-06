@@ -1,1 +1,1 @@
-This is were the models are stored.
+This is where the models are saved while training.
