@@ -63,10 +63,10 @@ def save_model(model_path, epoch, transformer, optimizer, loss):
 # TODO - improve tokenization process
 #   EN tokens
 en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-en_tokens_train = tokenize('data/data_en_train.txt', en_tokenizer, en_end_token, max_seq_length)
+en_tokens_train = tokenize('../data/data_en_train.txt', en_tokenizer, en_end_token, max_seq_length)
 #   DE tokens
 de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
-de_tokens_train = tokenize('data/data_de_train.txt', de_tokenizer, de_end_token, max_seq_length)
+de_tokens_train = tokenize('../data/data_de_train.txt', de_tokenizer, de_end_token, max_seq_length)
 
 # Batchify EN and DE lists
 en_tensor_train = batchify(en_tokens_train, num_sequences, max_seq_length)
