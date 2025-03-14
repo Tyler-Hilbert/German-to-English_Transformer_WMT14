@@ -9,18 +9,8 @@ from transformers import AutoTokenizer
 from torch.utils.data import DataLoader, Dataset
 from nltk.translate.bleu_score import sentence_bleu
 
-# Hyperparameters
-d_model = 64
-num_heads = 1
-num_layers = 2
-d_ff = 512
-max_seq_length = 160
-dropout = 0.1
-##epochs = 2000
-##lr = 0.0001
-##num_sequences = 10 # The number of training sequences. Will be multiplied by `max_sequence_length` to get number of tokens.
-vocab_size = 30000 # TODO - use exact embeddings size
-
+# Import hyperparameters
+from Params import *
 # Other values
 model_path = 'models/transformer_wmt14_epoch1999.pt'
 validation_dataset_path_input = '../data/data_en_train.txt'
