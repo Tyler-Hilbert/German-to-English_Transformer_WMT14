@@ -1,2 +1,2 @@
-https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb  
-https://github.com/as4401s/Transformers-in-Pytorch
+Reference article: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb  
+(Note the article just contains the model. The tokenization, dataset and BLEU loss were added by me).
