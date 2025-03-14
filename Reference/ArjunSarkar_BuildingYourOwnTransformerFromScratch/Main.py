@@ -1,3 +1,5 @@
+# Dumbed down to a really small model to see if it'll learn
+
 # I have modified the original script to use wmt14.
 # Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
 
@@ -11,15 +13,15 @@ from transformers import AutoTokenizer
 from torch.utils.data import DataLoader, Dataset
 
 # Hyperparameters
-d_model = 512
-num_heads = 8
-num_layers = 6
-d_ff = 2048
-max_seq_length = 100
+d_model = 64
+num_heads = 1
+num_layers = 2
+d_ff = 512
+max_seq_length = 160
 dropout = 0.1
-epochs = 750
+epochs = 2000
 lr = 0.0001
-num_sequences = 100 # The number of training sequences. Will be multiplied by `max_sequence_length` to get number of tokens.
+num_sequences = 10 # The number of training sequences. Will be multiplied by `max_sequence_length` to get number of tokens.
 vocab_size = 30000 # TODO - use exact embeddings size
 
 # Other values
