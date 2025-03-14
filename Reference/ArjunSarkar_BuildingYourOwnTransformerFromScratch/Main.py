@@ -1,5 +1,3 @@
-# Dumbed down to a really small model to see if it'll learn. Also switched to de->en to make debugging easier.
-
 # I have modified the original script to use wmt14.
 # Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
 
@@ -78,7 +76,7 @@ for epoch in range(epochs):
     print(f"Epoch: {epoch+1}, Loss: {loss.item()}")
 
     # Save model
-    if epoch % 10 == 0:
+    if epoch % 25 == 0:
         save_model(model_path, epoch, transformer, optimizer, loss)
 
 

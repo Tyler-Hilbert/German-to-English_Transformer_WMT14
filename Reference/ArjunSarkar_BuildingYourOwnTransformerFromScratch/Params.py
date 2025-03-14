@@ -1,8 +1,8 @@
 # Hyperparameters
-d_model = 64
-num_heads = 1
-num_layers = 2
-d_ff = 512
+d_model = 512
+num_heads = 8
+num_layers = 6
+d_ff = 2048
 max_seq_length = 160
 dropout = 0.1
 epochs = 2000
