@@ -13,8 +13,8 @@ from nltk.translate.bleu_score import sentence_bleu
 from Params import *
 # Other values
 model_path = 'models/transformer_wmt14_epoch1999.pt'
-validation_dataset_path_input = '../data/data_en_train.txt'
-validation_dataset_path_expected_outputs = '../data/data_de_train.txt'
+validation_dataset_path_input = '../data/data_de_train.txt'
+validation_dataset_path_expected_outputs = '../data/data_en_train.txt'
 
 ######################################################
 
@@ -51,9 +51,9 @@ for input, expected_output in zip(inputs, expected_outputs):
     de = de[:1 * max_seq_length].view(1, max_seq_length)
 
     # Inference
-    output = transformer(en, de[:, :-1])
+    output = transformer(de, en[:, :-1])
     output_ids = output.argmax(dim=-1).squeeze(0).tolist()
-    decoded_text = de_tokenizer.decode(output_ids, skip_special_tokens=True)
+    decoded_text = en_tokenizer.decode(output_ids, skip_special_tokens=True)
 
     # Score
     print ('Input:', input)

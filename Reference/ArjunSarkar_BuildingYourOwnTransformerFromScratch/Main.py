@@ -1,4 +1,4 @@
-# Dumbed down to a really small model to see if it'll learn
+# Dumbed down to a really small model to see if it'll learn. Also switched to de->en to make debugging easier.
 
 # I have modified the original script to use wmt14.
 # Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
@@ -71,8 +71,8 @@ optimizer = optim.Adam(transformer.parameters(), lr=lr, betas=(0.9, 0.98), eps=1
 transformer.train()
 for epoch in range(epochs):
     optimizer.zero_grad()
-    output = transformer(en_tensor_train, de_tensor_train[:, :-1])
-    loss = criterion(output.contiguous().view(-1, vocab_size), de_tensor_train[:, 1:].contiguous().view(-1))
+    output = transformer(de_tensor_train, en_tensor_train[:, :-1])
+    loss = criterion(output.contiguous().view(-1, vocab_size), en_tensor_train[:, 1:].contiguous().view(-1))
     loss.backward()
     optimizer.step()
     print(f"Epoch: {epoch+1}, Loss: {loss.item()}")
