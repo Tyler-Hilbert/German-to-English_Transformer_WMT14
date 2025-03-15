@@ -18,7 +18,7 @@ model_path = 'models/transformer_wmt14' # Path to save model
 ####### UTILS ###############################################
 
 # Convert `file_path`, a file of space separated sentences, to tokens using `tokenizer`
-def tokenize(file_path, tokenizer, padding, max_seq_length):
+def tokenize(file_path, tokenizer):
     tokens = []
     with open(file_path, 'r') as file:
         for line in file:
@@ -51,10 +51,10 @@ def save_model(model_path, epoch, transformer, optimizer, loss):
 # TODO - improve tokenization process
 #   EN tokens
 en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-en_tokens_train = tokenize('../data/data_en_train.txt', en_tokenizer, en_end_token, max_seq_length)
+en_tokens_train = tokenize('../data/data_en_train.txt', en_tokenizer)
 #   DE tokens
 de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
-de_tokens_train = tokenize('../data/data_de_train.txt', de_tokenizer, de_end_token, max_seq_length)
+de_tokens_train = tokenize('../data/data_de_train.txt', de_tokenizer)
 
 # Batchify EN and DE lists
 en_tensor_train = batchify(en_tokens_train, num_sequences, max_seq_length)
