@@ -39,6 +39,6 @@ for input, expected_output in zip(inputs, expected_outputs):
         expected_output = expected_output.split(' ')
 
         # Score
-        bleu_score = sentence_bleu(decoded, expected_output)
+        bleu_score = sentence_bleu([expected_output], decoded)
         print (bleu_score)
         print ('')
