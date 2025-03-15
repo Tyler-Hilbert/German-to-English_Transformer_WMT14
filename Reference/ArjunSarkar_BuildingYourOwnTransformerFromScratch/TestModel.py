@@ -59,7 +59,9 @@ for input, expected_output in zip(inputs, expected_outputs):
     print ('Input:', input)
     print('Decoded output:', decoded_text)
     print ('expected output', expected_output)
-    bleu_score = sentence_bleu(decoded_text, expected_output)
+    decoded_text = decoded_text.split(' ')
+    expected_output = expected_output.split(' ')
+    bleu_score = sentence_bleu([expected_output], decoded_text)
     print ('BLEU score', bleu_score)
     print ('\n\n')
 
