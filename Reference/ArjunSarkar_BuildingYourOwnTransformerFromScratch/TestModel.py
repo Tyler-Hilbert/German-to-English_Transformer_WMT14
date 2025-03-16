@@ -12,9 +12,7 @@ from nltk.translate.bleu_score import sentence_bleu
 # Import hyperparameters
 from Params import *
 # Other values
-model_path = 'models/transformer_wmt14_epoch1999.pt'
-validation_dataset_path_input = '../data/data_de_train.txt'
-validation_dataset_path_expected_outputs = '../data/data_en_train.txt'
+model_path = 'models/transformer_wmt14_epoch300.pt'
 
 ######################################################
 
@@ -28,10 +26,10 @@ transformer.eval()
 # Load dataset
 inputs = []
 expected_outputs = []
-with open(validation_dataset_path_input, 'r') as file:
+with open(train_dataset_path_input, 'r') as file:
     for line in file:
         inputs.append(line.strip())
-with open(validation_dataset_path_expected_outputs, 'r') as file:
+with open(train_dataset_path_expected_outputs, 'r') as file:
     for line in file:
         expected_outputs.append(line.strip())
 

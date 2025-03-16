@@ -23,6 +23,7 @@ def tokenize(file_path, tokenizer):
     with open(file_path, 'r') as file:
         for line in file:
             tokens += tokenizer(line.strip()).input_ids
+            break # FIXME this is just for testing
     return tokens
 
 # Batchify python list and convert to torch.tensor
@@ -51,14 +52,20 @@ def save_model(model_path, epoch, transformer, optimizer, loss):
 # TODO - improve tokenization process
 #   EN tokens
 en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-en_tokens_train = tokenize('../data/data_en_train.txt', en_tokenizer)
+en_tokens_train = tokenize(train_dataset_path_input, en_tokenizer)
+en_tokens_train += [0]*num_sequences*max_seq_length # FIXME
+print (en_tokens_train)
 #   DE tokens
 de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
-de_tokens_train = tokenize('../data/data_de_train.txt', de_tokenizer)
+de_tokens_train = tokenize(train_dataset_path_expected_outputs, de_tokenizer)
+de_tokens_train += [0]*num_sequences*max_seq_length # FIXME
+print (de_tokens_train)
 
 # Batchify EN and DE lists
 en_tensor_train = batchify(en_tokens_train, num_sequences, max_seq_length)
+print (en_tensor_train)
 de_tensor_train = batchify(de_tokens_train, num_sequences, max_seq_length)
+print (de_tensor_train)
 
 # Model
 transformer = Transformer(vocab_size, vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)

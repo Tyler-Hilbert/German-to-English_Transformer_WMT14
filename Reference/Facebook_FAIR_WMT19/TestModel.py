@@ -4,8 +4,8 @@ from transformers import FSMTForConditionalGeneration, FSMTTokenizer
 from nltk.translate.bleu_score import sentence_bleu
 
 # Dataset
-validation_dataset_path_input = '../data/data_de_validation.txt'
-validation_dataset_path_expected_outputs = '../data/data_en_validation.txt'
+validation_dataset_path_input = '../../data/data_de_validation.txt'
+validation_dataset_path_expected_outputs = '../../data/data_en_validation.txt'
 
 # Load model and tokenizer
 mname = "facebook/wmt19-de-en"
