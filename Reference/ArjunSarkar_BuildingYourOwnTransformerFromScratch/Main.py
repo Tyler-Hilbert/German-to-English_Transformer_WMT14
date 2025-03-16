@@ -18,10 +18,10 @@ model_path = 'models/transformer_wmt14' # Path to save model
 ###############################################
 
 # Main
-def train():
+def train(model_path):
     # Load dataset and tokenize
-    en_tokens_train = tokenize(train_dataset_path_input, 'bert-base-uncased')
-    de_tokens_train = tokenize(train_dataset_path_expected_outputs, 'bert-base-german-cased')
+    en_tokens_train = load_file_and_tokenize(train_dataset_path_input, 'bert-base-uncased')
+    de_tokens_train = load_file_and_tokenize(train_dataset_path_expected_outputs, 'bert-base-german-cased')
 
     # Batchify (move to PyTorch tensor)
     en_tensor_train = batchify(en_tokens_train, num_sequences, max_seq_length)
@@ -50,7 +50,7 @@ def train():
     save_model(model_path, epoch, transformer, optimizer, loss)
 
 # Convert `file_path`, a file of space separated sentences using AutoTokenizer `tokenizer_name`
-def tokenize(file_path, tokenizer_name):
+def load_file_and_tokenize(file_path, tokenizer_name):
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
 
     tokens = []
@@ -81,4 +81,4 @@ def save_model(model_path, epoch, transformer, optimizer, loss):
     )
 
 if __name__ == "__main__":
-    train()
+    train(model_path)
