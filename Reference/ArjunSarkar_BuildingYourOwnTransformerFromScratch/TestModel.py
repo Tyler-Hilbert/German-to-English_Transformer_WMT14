@@ -12,54 +12,58 @@ from nltk.translate.bleu_score import sentence_bleu
 # Import hyperparameters
 from Params import *
 # Other values
-model_path = 'models/transformer_wmt14_epoch300.pt'
+model_path = 'models/transformer_wmt14_epoch1999.pt'
 
 ######################################################
 
-# Load model
-en_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-de_tokenizer = AutoTokenizer.from_pretrained("bert-base-german-cased")
-transformer = Transformer(vocab_size, vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
-transformer.load_state_dict(torch.load(model_path, weights_only=False)['model_state_dict'])
-transformer.eval()
+def validation():
+    # Load model
+    en_tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+    de_tokenizer = AutoTokenizer.from_pretrained('bert-base-german-cased')
+    transformer = Transformer(vocab_size, vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
+    transformer.load_state_dict(torch.load(model_path, weights_only=False)['model_state_dict'])
+    transformer.eval()
 
-# Load dataset
-inputs = []
-expected_outputs = []
-with open(train_dataset_path_input, 'r') as file:
-    for line in file:
-        inputs.append(line.strip())
-with open(train_dataset_path_expected_outputs, 'r') as file:
-    for line in file:
-        expected_outputs.append(line.strip())
+    # Load datasets
+    en_dataset = load_file_by_line(train_dataset_path_en)
+    de_dataset = load_file_by_line(train_dataset_path_de)
 
-# Test dataset
-for input, expected_output in zip(inputs, expected_outputs):
-    # Tokenize
-    en = en_tokenizer(input).input_ids
-    padding_length = max_seq_length - len(en)
-    en += [0] * padding_length
-    en = torch.tensor(en)
-    en = en[:1 * max_seq_length].view(1, max_seq_length)
+    for en_text, de_text in zip(en_dataset, de_dataset):
+        en_tokens = tokenize(en_text, en_tokenizer)
+        de_tokens = tokenize(de_text, de_tokenizer)
 
-    de = de_tokenizer("").input_ids
-    padding_length = max_seq_length - len(de)
-    de += [0] * padding_length
-    de = torch.tensor(de)
-    de = de[:1 * max_seq_length].view(1, max_seq_length)
+        print ('en_tokens', en_tokens)
+        print ('de_tokens', de_tokens)
 
-    # Inference
-    output = transformer(de, en[:, :-1])
-    output_ids = output.argmax(dim=-1).squeeze(0).tolist()
-    decoded_text = en_tokenizer.decode(output_ids, skip_special_tokens=True)
+        # Inference
+        output = transformer(de_tokens, en_tokens[:, :-1])
+        output_ids = output.argmax(dim=-1).squeeze(0).tolist()
+        #print ('output_ids', output_ids)
+        decoded_text = en_tokenizer.decode(output_ids, skip_special_tokens=True)
+        #print ('decoded_text', decoded_text)
 
-    # Score
-    print ('Input:', input)
-    print('Decoded output:', decoded_text)
-    print ('expected output', expected_output)
-    decoded_text = decoded_text.split(' ')
-    expected_output = expected_output.split(' ')
-    bleu_score = sentence_bleu([expected_output], decoded_text)
-    print ('BLEU score', bleu_score)
-    print ('\n\n')
+        # Score
+        print ('Input:', de_text)
+        print('Decoded output:', decoded_text)
+        print ('expected output', en_text)
+        decoded_text = decoded_text.lower().split(' ')
+        expected_output = en_text.lower().split(' ')
+        bleu_score = sentence_bleu([expected_output], decoded_text)
+        print ('BLEU score', bleu_score)
+        print ('\n\n')
 
+# Loads a single file line by line
+def load_file_by_line(dataset):
+    sentences = []
+    with open(dataset, 'r') as file:
+        for line in file:
+            sentences.append(line.strip())
+    return sentences
+
+# Tokenizes and returns a torch tensor
+def tokenize(sentence, tokenizer):
+    tokens = tokenizer(sentence).input_ids
+    return torch.tensor([tokens])
+
+if __name__ == "__main__":
+    validation()

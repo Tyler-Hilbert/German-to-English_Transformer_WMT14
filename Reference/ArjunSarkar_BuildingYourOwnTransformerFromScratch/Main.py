@@ -20,8 +20,8 @@ model_path = 'models/transformer_wmt14' # Path to save model
 # Main
 def train(model_path):
     # Load dataset and tokenize
-    en_tokens_train = load_file_and_tokenize(train_dataset_path_input, 'bert-base-uncased')
-    de_tokens_train = load_file_and_tokenize(train_dataset_path_expected_outputs, 'bert-base-german-cased')
+    en_tokens_train = load_file_and_tokenize(train_dataset_path_en, 'bert-base-uncased')
+    de_tokens_train = load_file_and_tokenize(train_dataset_path_de, 'bert-base-german-cased')
 
     # Batchify (move to PyTorch tensor)
     en_tensor_train = batchify(en_tokens_train, num_sequences, max_seq_length)
