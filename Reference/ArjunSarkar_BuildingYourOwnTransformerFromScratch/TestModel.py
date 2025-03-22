@@ -12,14 +12,14 @@ from nltk.translate.bleu_score import sentence_bleu
 # Import hyperparameters
 from Params import *
 # Other values
-model_path = 'models/transformer_wmt14_epoch1999.pt'
+model_path = 'models/transformer_wmt14_epoch99.pt'
 
 ######################################################
 
 def validation():
     # Load model
-    en_tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
-    de_tokenizer = AutoTokenizer.from_pretrained('bert-base-german-cased')
+    en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
+    de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
     transformer = Transformer(vocab_size, vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
     transformer.load_state_dict(torch.load(model_path, weights_only=False)['model_state_dict'])
     transformer.eval()
