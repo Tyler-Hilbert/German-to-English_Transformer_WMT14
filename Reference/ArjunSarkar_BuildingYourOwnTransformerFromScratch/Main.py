@@ -2,7 +2,7 @@
 # Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
 
 from Model import Transformer
-from DE_EN_Dataset import DE_EN_Dataset
+from SentencePairDataset import SentencePairDataset
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -17,7 +17,7 @@ model_path = 'models/transformer_wmt14' # Path to save model
 # Main
 def train(model_path):
     # Load dataset
-    training_data = DE_EN_Dataset(
+    training_data = SentencePairDataset(
         train_dataset_path_de, 
         train_dataset_path_en, 
         de_tokenizer_name, 
