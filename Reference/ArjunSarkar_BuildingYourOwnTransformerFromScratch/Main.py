@@ -6,6 +6,7 @@ from SentencePairDataset import SentencePairDataset
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import DataLoader
 
 # Import hyperparameters
 from Params import *
@@ -23,6 +24,15 @@ def train(model_path):
         de_tokenizer_name, 
         en_tokenizer_name,
         max_seq_length
+    )
+
+    # Data loader
+    # TODO -- optimize parameters
+    training_generator = DataLoader(
+        training_data,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=1
     )
 
     # Init model
@@ -45,42 +55,30 @@ def train(model_path):
     transformer.train()
     for epoch in range(epochs):
         epoch_loss = 0
-        for batch_num in range(training_data.__len__()):
+        for batch_de_tokens, batch_en_tokens in training_generator:
             optimizer.zero_grad()
-            de_tokens, en_tokens = training_data.__getitem__(batch_num)
 
-            #print ('de_tokens', de_tokens)
-            #print ('en_tokens', en_tokens)
+            #print ('batch_de_tokens\n', batch_de_tokens)
+            #print ('batch_en_tokens\n', batch_en_tokens)
 
-            de_tensor_train = to_torch_tensor(de_tokens, 1, max_seq_length) # TODO -- larger batch size
-            en_tensor_train = to_torch_tensor(en_tokens, 1, max_seq_length)
-
-            output = transformer(de_tensor_train, en_tensor_train[:, :-1])
-            loss = criterion(output.contiguous().view(-1, vocab_size), en_tensor_train[:, 1:].contiguous().view(-1))
+            output = transformer(batch_de_tokens, batch_en_tokens[:, :-1])
+            loss = criterion(output.contiguous().view(-1, vocab_size), batch_en_tokens[:, 1:].contiguous().view(-1))
             loss.backward()
             optimizer.step()
 
             epoch_loss += loss.item()
+            #print(f"Epoch: {epoch+1}, Loss: {loss.item()}")
 
         # Print end of epoch stats
         avg_epoch_loss = epoch_loss / training_data.__len__()
         print(f"Epoch: {epoch+1}, Loss: {avg_epoch_loss}")
 
         # Save model
-        if epoch % 10 == 0:
+        if epoch % 5 == 0:
             save_model(model_path, epoch, transformer, optimizer)
 
     # Save final model
     save_model(model_path, epoch, transformer, optimizer)
-
-# Convert list to torch.tensor
-def to_torch_tensor(tokens, num_sequences, max_seq_length):
-    num_tokens = num_sequences*max_seq_length
-    tokens = tokens[:num_tokens]
-    tokens_tensor = torch.tensor(tokens)
-    tokens_tensor = tokens_tensor[:num_sequences * max_seq_length].view(num_sequences, max_seq_length)
-    #print (tokens_tensor.shape)
-    return tokens_tensor
 
 # Save model to disk
 def save_model(model_path, epoch, transformer, optimizer):

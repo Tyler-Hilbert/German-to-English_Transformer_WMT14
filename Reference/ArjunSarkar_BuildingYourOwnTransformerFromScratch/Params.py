@@ -4,12 +4,12 @@ num_heads = 8
 num_layers = 6
 d_ff = 2048
 
-max_seq_length = 301
-
-dropout = 0.1
+max_seq_length = 301 # TODO - Truncate
 
 epochs = 100
+batch_size = 5
 lr = 0.0001
+dropout = 0.1
 
 # Dataset
 train_dataset_path_de = '../../data/data_de_train.txt'
