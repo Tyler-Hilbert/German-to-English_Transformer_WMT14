@@ -14,6 +14,8 @@ dropout = 0.1
 # Dataset
 train_dataset_path_de = '../../data/data_de_train.txt'
 train_dataset_path_en = '../../data/data_en_train.txt'
+validation_dataset_path_de = '../../data/data_de_validation.txt'
+validation_dataset_path_en = '../../data/data_en_validation.txt'
 
 # Tokenizers
 en_tokenizer_name = 'bert-base-uncased'

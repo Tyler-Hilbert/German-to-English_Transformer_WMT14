@@ -25,8 +25,8 @@ def validation():
     transformer.eval()
 
     # Load datasets
-    en_dataset = load_file_by_line(train_dataset_path_en)
-    de_dataset = load_file_by_line(train_dataset_path_de)
+    en_dataset = load_file_by_line(validation_dataset_path_en)
+    de_dataset = load_file_by_line(validation_dataset_path_de)
 
     for en_text, de_text in zip(en_dataset, de_dataset):
         en_tokens = tokenize(en_text, en_tokenizer)
