@@ -1,5 +1,4 @@
 # I have modified the original script to use wmt14.
-# Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
 
 from Model import Transformer
 from SentencePairDataset import SentencePairDataset
@@ -17,6 +16,14 @@ model_path = 'models/transformer_wmt14' # Path to save model
 
 # Main
 def train(model_path):
+    # Select CUDA, mps or CPU
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
+
     # Load dataset
     training_data = SentencePairDataset(
         train_dataset_path_de, 
@@ -44,8 +51,9 @@ def train(model_path):
         num_layers, 
         d_ff, 
         max_seq_length, 
-        dropout
-    )
+        dropout,
+        device
+    ).to(device)
 
     # Loss
     criterion = nn.CrossEntropyLoss(ignore_index=0)
@@ -56,6 +64,9 @@ def train(model_path):
     for epoch in range(epochs):
         epoch_loss = 0
         for batch_de_tokens, batch_en_tokens in training_generator:
+            batch_de_tokens = batch_de_tokens.to(device)
+            batch_en_tokens = batch_en_tokens.to(device)
+
             optimizer.zero_grad()
 
             #print ('batch_de_tokens\n', batch_de_tokens)
