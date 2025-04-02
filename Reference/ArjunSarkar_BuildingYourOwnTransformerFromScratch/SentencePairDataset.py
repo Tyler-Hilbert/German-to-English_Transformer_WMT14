@@ -36,7 +36,11 @@ class SentencePairDataset(Dataset):
         sentence_tokens = []
         with open(file_path, 'r') as file:
             for line in file:
-                tokens = tokenizer(line.strip()).input_ids
-                tokens += [0] * (max_seq_length-len(tokens))
+                tokens = tokenizer(
+                    line.strip(),
+                    truncation=True,
+                    padding='max_length',
+                    max_length=max_seq_length
+                ).input_ids
                 sentence_tokens.append(tokens)
         return torch.tensor(sentence_tokens)

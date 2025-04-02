@@ -4,7 +4,7 @@ num_heads = 8
 num_layers = 6
 d_ff = 2048
 
-max_seq_length = 301 # TODO - Truncate
+max_seq_length = 301
 
 epochs = 100
 batch_size = 5
