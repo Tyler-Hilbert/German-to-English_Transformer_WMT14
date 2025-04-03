@@ -1,2 +1,2 @@
+I added the custom-DataSet, DataLoader, Tokenizer and BLEU loss / evaluation script. The PyTorch class (which I modified to allow GPU training) is listed here:  
 Reference article: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb  
-(Note the article just contains the model. The tokenization, dataset and BLEU loss were added by me).

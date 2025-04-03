@@ -1,4 +1,5 @@
-# I have modified the original script to use wmt14.
+# The original transformer model proposed in `Attention Is All You Need`.
+# Implemented in PyTorch using WMT14 (DE to EN).
 
 from Model import Transformer
 from SentencePairDataset import SentencePairDataset
@@ -6,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+import time
 
 # Import hyperparameters
 from Params import *
@@ -62,15 +64,13 @@ def train(model_path):
     # Training loop
     transformer.train()
     for epoch in range(epochs):
+        start_time = time.time()
         epoch_loss = 0
+
         for batch_de_tokens, batch_en_tokens in training_generator:
             batch_de_tokens = batch_de_tokens.to(device)
             batch_en_tokens = batch_en_tokens.to(device)
-
             optimizer.zero_grad()
-
-            #print ('batch_de_tokens\n', batch_de_tokens)
-            #print ('batch_en_tokens\n', batch_en_tokens)
 
             output = transformer(batch_de_tokens, batch_en_tokens[:, :-1])
             loss = criterion(output.contiguous().view(-1, vocab_size), batch_en_tokens[:, 1:].contiguous().view(-1))
@@ -78,14 +78,14 @@ def train(model_path):
             optimizer.step()
 
             epoch_loss += loss.item()
-            #print(f"Epoch: {epoch+1}, Loss: {loss.item()}")
 
         # Print end of epoch stats
         avg_epoch_loss = epoch_loss / training_data.__len__()
-        print(f"Epoch: {epoch+1}, Loss: {avg_epoch_loss}")
+        epoch_time = time.time() - start_time
+        print(f"Epoch: {epoch+1}, Loss: {avg_epoch_loss}, Epoch Time: {epoch_time}s")
 
         # Save model
-        if epoch % 5 == 0:
+        if epoch % 10 == 0:
             save_model(model_path, epoch, transformer, optimizer)
 
     # Save final model
@@ -93,6 +93,7 @@ def train(model_path):
 
 # Save model to disk
 def save_model(model_path, epoch, transformer, optimizer):
+    # TODO - epoch off by 1
     full_model_path = model_path + '_epoch' + str(epoch) + '.pt'
     # TODO - add loss
     torch.save({
