@@ -6,8 +6,8 @@ d_ff = 2048
 
 max_seq_length = 301
 
-epochs = 100
-batch_size = 5
+epochs = 5
+batch_size = 1
 lr = 0.0001
 dropout = 0.1
 

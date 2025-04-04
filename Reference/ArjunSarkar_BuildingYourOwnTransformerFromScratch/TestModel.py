@@ -1,3 +1,5 @@
+# FIXME This is behind Main.py
+
 # Test trained model with string
 
 from Model import Transformer
