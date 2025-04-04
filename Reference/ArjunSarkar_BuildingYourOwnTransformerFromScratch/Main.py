@@ -61,8 +61,6 @@ def train(model_path):
         epoch_loss = 0
 
         for step, data in enumerate(training_generator):
-            assert (batch_size == 1) # FIXME allow batch sizes larger than 1
-
             # DE tokenization
             data_de = data['translation']['de']
             de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
@@ -98,8 +96,10 @@ def train(model_path):
 
             epoch_loss += loss.item()
 
-            #if step % 5 == 0:
-            #    print (f'Step {step}, Loss (last training example) {loss.item()}, Time elapse since start of Epoch {time.time() - start_time}')
+            if step % 100 == 0:
+                print (f'Step {step}, Loss (last training example) {loss.item()}, Time elapse since start of Epoch {time.time() - start_time}')
+            if step % 1000 == 0:
+                save_model(model_path, epoch, transformer, optimizer)
 
         # Print end of epoch stats
         avg_epoch_loss = epoch_loss / training_data.__len__()

@@ -4,10 +4,10 @@ num_heads = 8
 num_layers = 6
 d_ff = 2048
 
-max_seq_length = 301
+max_seq_length = 128
 
 epochs = 5
-batch_size = 1
+batch_size = 32
 lr = 0.0001
 dropout = 0.1
 
