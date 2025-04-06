@@ -2,7 +2,6 @@
 # Implemented in PyTorch using WMT14 (DE to EN).
 
 from Model import Transformer
-#from SentencePairDataset import SentencePairDataset # TODO -- either refactor to include or remove completely
 from transformers import AutoTokenizer # TODO -- remove when implemented in custom dataset
 import torch
 import torch.nn as nn

@@ -18,6 +18,7 @@ validation_dataset_path_de = '../../data/data_de_validation.txt'
 validation_dataset_path_en = '../../data/data_en_validation.txt'
 
 # Tokenizers
+# TODO -- fix the casing
 en_tokenizer_name = 'bert-base-uncased'
 de_tokenizer_name = 'bert-base-german-cased'
 vocab_size = 30000 # TODO - use exact embeddings size
