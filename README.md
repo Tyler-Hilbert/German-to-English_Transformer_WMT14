@@ -1,8 +1,8 @@
-# CUDA-Transformer
-This project is in progress. It's mostly reference transformer code (in Python).  
-The "main project" [is in this subdirectory](https://github.com/Tyler-Hilbert/Transformer-WMT14-English_To_German/tree/main/Reference/ArjunSarkar_BuildingYourOwnTransformerFromScratch). It's a PyTorch implementation of the original transformer model using WMT14 English/German sentence pairs.  
-
-## Until this project is complete, feel free to check out more completed projects that resemble what I'm building towards:  
-1) https://github.com/Tyler-Hilbert/CUDA-KMeans  
-2) https://github.com/Tyler-Hilbert/CUDA-LinearRegression  
-3) https://github.com/Tyler-Hilbert/CUDA-SVM  
+# Model
+This is a German to English translation model that uses the same architecture and dataset as "Attention is all you Need".  
+I implemented the training code, CUDA/Mps support, dataset, tokenizer and evaluation script to a base PyTorch transformer model I found [here](https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb).  
+#### Differences
+The few minor differences from the paper are that:  
+- I tokenized with BERT.
+- I truncated sentences at 128 tokens.
+- I only used the WMT14 DE-EN sentence pairs rather than the entire dataset.
