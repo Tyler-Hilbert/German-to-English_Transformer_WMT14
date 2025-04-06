@@ -2,7 +2,7 @@
 # Implemented in PyTorch using WMT14 (DE to EN).
 
 from Model import Transformer
-from transformers import AutoTokenizer # TODO -- remove when implemented in custom dataset
+from transformers import AutoTokenizer
 import torch
 import torch.nn as nn
 import torch.optim as optim
