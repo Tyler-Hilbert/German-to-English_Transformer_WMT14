@@ -1,6 +1,4 @@
-# FIXME This is behind Main.py
-
-# Test trained model with string
+# Test trained model from validation dataset on disk
 
 from Model import Transformer
 import torch
@@ -14,28 +12,50 @@ from nltk.translate.bleu_score import sentence_bleu
 # Import hyperparameters
 from Params import *
 # Other values
-model_path = 'models/transformer_wmt14_epoch99.pt'
+model_path = 'models/model1_de-en.pt'
+verbose = False
 
 ######################################################
 
 def validation():
+    # Select CUDA, mps or CPU
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
+
     # Load model
     en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
     de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
-    transformer = Transformer(vocab_size, vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
+    transformer = Transformer(
+        vocab_size,
+        vocab_size,
+        d_model,
+        num_heads,
+        num_layers,
+        d_ff,
+        max_seq_length,
+        dropout,
+        device
+    ).to(device)
     transformer.load_state_dict(torch.load(model_path, weights_only=False)['model_state_dict'])
     transformer.eval()
 
     # Load datasets
+    # TODO - convert this to load from dataset instead of file
     en_dataset = load_file_by_line(validation_dataset_path_en)
     de_dataset = load_file_by_line(validation_dataset_path_de)
 
     for en_text, de_text in zip(en_dataset, de_dataset):
-        en_tokens = tokenize(en_text, en_tokenizer)
-        de_tokens = tokenize(de_text, de_tokenizer)
+        en_tokens = tokenize(en_text, en_tokenizer, device)
+        de_tokens = tokenize(de_text, de_tokenizer, device)
+        de_tokens = de_tokens.to(device)
 
-        print ('en_tokens', en_tokens)
-        print ('de_tokens', de_tokens)
+        if verbose:
+            print ('en_tokens', en_tokens)
+            print ('de_tokens', de_tokens)
 
         # Inference
         output = transformer(de_tokens, en_tokens[:, :-1])
@@ -45,9 +65,10 @@ def validation():
         #print ('decoded_text', decoded_text)
 
         # Score
-        print ('Input:', de_text)
-        print('Decoded output:', decoded_text)
-        print ('expected output', en_text)
+        if verbose:
+            print ('Input:', de_text)
+        print ('Decoded output  :', decoded_text)
+        print ('Expected output :', en_text)
         decoded_text = decoded_text.lower().split(' ')
         expected_output = en_text.lower().split(' ')
         bleu_score = sentence_bleu([expected_output], decoded_text)
@@ -63,9 +84,9 @@ def load_file_by_line(dataset):
     return sentences
 
 # Tokenizes and returns a torch tensor
-def tokenize(sentence, tokenizer):
+def tokenize(sentence, tokenizer, device):
     tokens = tokenizer(sentence).input_ids
-    return torch.tensor([tokens])
+    return torch.tensor([tokens]).to(device)
 
 if __name__ == "__main__":
     validation()
