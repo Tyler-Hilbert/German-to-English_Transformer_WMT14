@@ -32,7 +32,7 @@ def train(model_path):
     training_generator = DataLoader(
         training_data,
         batch_size=batch_size,
-        shuffle=False,
+        shuffle=True,
         num_workers=1
     )
 
