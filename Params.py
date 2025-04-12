@@ -7,7 +7,7 @@ d_ff = 2048
 max_seq_length = 128
 
 epochs = 5
-batch_size = 32
+batch_size = 64
 lr = 0.0001
 dropout = 0.1
 

@@ -13,7 +13,7 @@ from datasets import load_dataset
 # Import hyperparameters
 from Params import *
 # Other values
-model_path = 'models/wmt14_de-en_full' # Path to save model
+model_path = 'models/wmt14_de-en_model1-1' # Path to save model
 
 ###############################################
 
@@ -33,7 +33,7 @@ def train(model_path):
         training_data,
         batch_size=batch_size,
         shuffle=True,
-        num_workers=1
+        num_workers=4
     )
 
     # Init model
@@ -114,8 +114,7 @@ def train(model_path):
 
 # Save model to disk
 def save_model(model_path, epoch, transformer, optimizer):
-    # TODO - epoch off by 1
-    full_model_path = model_path + '_epoch' + str(epoch) + '.pt'
+    full_model_path = model_path + '_epoch' + str(epoch+1) + '.pt'
     # TODO - add loss
     torch.save({
             'epoch': epoch,
