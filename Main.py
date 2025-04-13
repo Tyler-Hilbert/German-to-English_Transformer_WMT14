@@ -53,6 +53,10 @@ def train(model_path):
     criterion = nn.CrossEntropyLoss(ignore_index=0)
     optimizer = optim.Adam(transformer.parameters(), lr=lr, betas=(0.9, 0.98), eps=1e-9)
 
+    # Tokenizer
+    de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
+    en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
+
     # Training loop
     transformer.train()
     for epoch in range(epochs):
@@ -62,7 +66,6 @@ def train(model_path):
         for step, data in enumerate(training_generator):
             # DE tokenization
             data_de = data['translation']['de']
-            de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
             batch_de_tokens = torch.tensor(
                 de_tokenizer(
                     data_de,
@@ -75,7 +78,6 @@ def train(model_path):
 
             # EN tokenization
             data_en = data['translation']['en']
-            en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
             batch_en_tokens = torch.tensor(
                 en_tokenizer(
                     data_en,
