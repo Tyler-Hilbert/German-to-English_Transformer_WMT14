@@ -6,4 +6,4 @@ The differences from the paper are that:
 - I translated DE to EN while the paper translates EN to DE.
 - I truncated sentences at 128 tokens.
 - I only used the WMT14 DE-EN sentence pairs rather than the entire dataset.
-- I tokenized with BERT.
+- I use separate source and target vocabularies, tokenized with BERT, instead of a shared vocabulary.

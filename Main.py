@@ -11,7 +11,7 @@ import time
 from datasets import load_dataset
 
 # Import hyperparameters
-from Params import *
+from Config import *
 # Other values
 model_path = 'models/wmt14_de-en_model1-1' # Path to save model
 
@@ -27,6 +27,10 @@ def train(model_path):
     else:
         device = torch.device('cpu')
 
+    # Tokenizer
+    de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
+    en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
+
     # Load data
     training_data = load_dataset('wmt/wmt14', 'de-en', split='train')
     training_generator = DataLoader(
@@ -38,24 +42,20 @@ def train(model_path):
 
     # Init model
     transformer = Transformer(
-        vocab_size, 
-        vocab_size, 
-        d_model, 
-        num_heads, 
-        num_layers, 
-        d_ff, 
-        max_seq_length, 
-        dropout,
-        device
+        src_vocab_size=de_tokenizer.vocab_size,
+        tgt_vocab_size=en_tokenizer.vocab_size,
+        d_model=d_model,
+        num_heads=num_heads,
+        num_layers=num_layers,
+        d_ff=d_ff,
+        max_seq_length=max_seq_length,
+        dropout=dropout,
+        device=device
     ).to(device)
 
     # Loss
     criterion = nn.CrossEntropyLoss(ignore_index=0)
     optimizer = optim.Adam(transformer.parameters(), lr=lr, betas=(0.9, 0.98), eps=1e-9)
-
-    # Tokenizer
-    de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
-    en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
 
     # Training loop
     transformer.train()
@@ -91,7 +91,7 @@ def train(model_path):
             # Training
             optimizer.zero_grad()
             output = transformer(batch_de_tokens, batch_en_tokens[:, :-1])
-            loss = criterion(output.contiguous().view(-1, vocab_size), batch_en_tokens[:, 1:].contiguous().view(-1))
+            loss = criterion(output.contiguous().view(-1, en_tokenizer.vocab_size), batch_en_tokens[:, 1:].contiguous().view(-1))
             loss.backward()
             optimizer.step()
 

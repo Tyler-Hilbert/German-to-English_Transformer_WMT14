@@ -1,3 +1,5 @@
+# Deprecated
+
 # Test trained model from validation dataset on disk
 
 from Model import Transformer
@@ -10,7 +12,7 @@ from torch.utils.data import DataLoader, Dataset
 from nltk.translate.bleu_score import sentence_bleu
 
 # Import hyperparameters
-from Params import *
+from Config import *
 # Other values
 model_path = 'models/model1_de-en.pt'
 verbose = False
@@ -27,11 +29,13 @@ def validation():
         device = torch.device('cpu')
 
     # Load model
+
+    # FIXME -- vocab size
     en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
     de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
     transformer = Transformer(
-        vocab_size,
-        vocab_size,
+        30000,
+        30522,
         d_model,
         num_heads,
         num_layers,
