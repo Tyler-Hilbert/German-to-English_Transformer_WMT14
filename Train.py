@@ -2,20 +2,14 @@
 # Implemented in PyTorch using WMT14 (DE to EN).
 
 from Model import Transformer
+from Config import config
 from transformers import AutoTokenizer
+from datasets import load_dataset
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import time
-from datasets import load_dataset
-
-# Import hyperparameters
-from Config import *
-# Other values
-model_path = 'models/wmt14_de-en_model1-1' # Path to save model
-
-###############################################
 
 # Main
 def train(model_path):
@@ -28,38 +22,43 @@ def train(model_path):
         device = torch.device('cpu')
 
     # Tokenizer
-    de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
-    en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
+    de_tokenizer = AutoTokenizer.from_pretrained(config.de_tokenizer_name)
+    en_tokenizer = AutoTokenizer.from_pretrained(config.en_tokenizer_name)
 
     # Load data
     training_data = load_dataset('wmt/wmt14', 'de-en', split='train')
     training_generator = DataLoader(
         training_data,
-        batch_size=batch_size,
+        batch_size=config.batch_size,
         shuffle=True,
         num_workers=4
     )
 
     # Init model
     transformer = Transformer(
-        src_vocab_size=de_tokenizer.vocab_size,
-        tgt_vocab_size=en_tokenizer.vocab_size,
-        d_model=d_model,
-        num_heads=num_heads,
-        num_layers=num_layers,
-        d_ff=d_ff,
-        max_seq_length=max_seq_length,
-        dropout=dropout,
-        device=device
+        src_vocab_size= de_tokenizer.vocab_size,
+        tgt_vocab_size= en_tokenizer.vocab_size,
+        d_model=        config.d_model,
+        num_heads=      config.num_heads,
+        num_layers=     config.num_layers,
+        d_ff=           config.d_ff,
+        max_seq_length= config.max_seq_length,
+        dropout=        config.dropout,
+        device=         device
     ).to(device)
 
     # Loss
     criterion = nn.CrossEntropyLoss(ignore_index=0)
-    optimizer = optim.Adam(transformer.parameters(), lr=lr, betas=(0.9, 0.98), eps=1e-9)
+    optimizer = optim.Adam(
+        transformer.parameters(),
+        lr=config.lr,
+        betas=(0.9, 0.98),
+        eps=1e-9
+    )
 
     # Training loop
     transformer.train()
-    for epoch in range(epochs):
+    for epoch in range(config.epochs):
         start_time = time.time()
         epoch_loss = 0
 
@@ -71,10 +70,9 @@ def train(model_path):
                     data_de,
                     truncation=True,
                     padding='max_length',
-                    max_length=max_seq_length
+                    max_length=config.max_seq_length
                 ).input_ids
-            )
-            batch_de_tokens = batch_de_tokens.to(device)
+            ).to(device)
 
             # EN tokenization
             data_en = data['translation']['en']
@@ -83,10 +81,9 @@ def train(model_path):
                     data_en,
                     truncation=True,
                     padding='max_length',
-                    max_length=max_seq_length
+                    max_length=config.max_seq_length
                 ).input_ids
-            )
-            batch_en_tokens = batch_en_tokens.to(device)
+            ).to(device)
 
             # Training
             optimizer.zero_grad()
@@ -117,7 +114,6 @@ def train(model_path):
 # Save model to disk
 def save_model(model_path, epoch, transformer, optimizer):
     full_model_path = model_path + '_epoch' + str(epoch+1) + '.pt'
-    # TODO - add loss
     torch.save({
             'epoch': epoch,
             'model_state_dict': transformer.state_dict(),
@@ -127,4 +123,4 @@ def save_model(model_path, epoch, transformer, optimizer):
     )
 
 if __name__ == "__main__":
-    train(model_path)
+    train(config.model_path)

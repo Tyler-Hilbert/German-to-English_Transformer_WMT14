@@ -14,7 +14,7 @@ from nltk.translate.bleu_score import sentence_bleu
 # Import hyperparameters
 from Config import *
 # Other values
-model_path = 'models/model1_de-en.pt'
+model_path = 'models/wmt14_de-en_model1-1_epoch5.pt'
 verbose = False
 
 ######################################################
@@ -31,31 +31,30 @@ def validation():
     # Load model
 
     # FIXME -- vocab size
-    en_tokenizer = AutoTokenizer.from_pretrained(en_tokenizer_name)
-    de_tokenizer = AutoTokenizer.from_pretrained(de_tokenizer_name)
+    en_tokenizer = AutoTokenizer.from_pretrained(config.en_tokenizer_name)
+    de_tokenizer = AutoTokenizer.from_pretrained(config.de_tokenizer_name)
     transformer = Transformer(
-        30000,
-        30522,
-        d_model,
-        num_heads,
-        num_layers,
-        d_ff,
-        max_seq_length,
-        dropout,
-        device
+        src_vocab_size= 30000,
+        tgt_vocab_size= 30522,
+        d_model=        config.d_model,
+        num_heads=      config.num_heads,
+        num_layers=     config.num_layers,
+        d_ff=           config.d_ff,
+        max_seq_length= config.max_seq_length,
+        dropout=        config.dropout,
+        device=         device
     ).to(device)
     transformer.load_state_dict(torch.load(model_path, weights_only=False)['model_state_dict'])
     transformer.eval()
 
     # Load datasets
     # TODO - convert this to load from dataset instead of file
-    en_dataset = load_file_by_line(validation_dataset_path_en)
-    de_dataset = load_file_by_line(validation_dataset_path_de)
+    en_dataset = load_file_by_line(config.validation_dataset_path_en)
+    de_dataset = load_file_by_line(config.validation_dataset_path_de)
 
     for en_text, de_text in zip(en_dataset, de_dataset):
         en_tokens = tokenize(en_text, en_tokenizer, device)
-        de_tokens = tokenize(de_text, de_tokenizer, device)
-        de_tokens = de_tokens.to(device)
+        de_tokens = tokenize(de_text, de_tokenizer, device).to(device)
 
         if verbose:
             print ('en_tokens', en_tokens)
