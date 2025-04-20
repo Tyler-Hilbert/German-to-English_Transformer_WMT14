@@ -1,6 +1,3 @@
-# Reference: https://medium.com/towards-data-science/build-your-own-transformer-from-scratch-using-pytorch-84c850470dcb
-#   (modified to include CUDA & mps)
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
