@@ -11,7 +11,7 @@ config = {
     'max_seq_length': 128,
 
     'epochs': 5,
-    'batch_size': 64,
+    'batch_size': 512, # For h200. For local MPS, use 64
     'lr': 0.0001,
     'dropout': 0.1,
 
