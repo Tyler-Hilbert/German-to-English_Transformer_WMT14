@@ -29,13 +29,11 @@ def validation():
         device = torch.device('cpu')
 
     # Load model
-
-    # FIXME -- vocab size
     en_tokenizer = AutoTokenizer.from_pretrained(config.en_tokenizer_name)
     de_tokenizer = AutoTokenizer.from_pretrained(config.de_tokenizer_name)
     transformer = Transformer(
-        src_vocab_size= 30000,
-        tgt_vocab_size= 30522,
+        src_vocab_size= de_tokenizer.vocab_size,
+        tgt_vocab_size= en_tokenizer.vocab_size,
         d_model=        config.d_model,
         num_heads=      config.num_heads,
         num_layers=     config.num_layers,
@@ -44,7 +42,7 @@ def validation():
         dropout=        config.dropout,
         device=         device
     ).to(device)
-    transformer.load_state_dict(torch.load(model_path, weights_only=False)['model_state_dict'])
+    transformer.load_state_dict(torch.load(model_path, map_location=device, weights_only=False)['model_state_dict'])
     transformer.eval()
 
     # Load datasets
