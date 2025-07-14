@@ -16,4 +16,5 @@ Train the model using the command:
 (if you get a memory error that means you need to decrease `batch_size` in `Config.py`)
 #### Step 3 -- Test Model
 Test the trained model on the validation dataset using the command:  
-`$python3 TestModel.py`
+`$python3 TestModel.py`  
+(update `model_path` in `Config.py` as the filename changes depending on how long the model is trained)
